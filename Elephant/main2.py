@@ -2,10 +2,10 @@ import RPi.GPIO as GPIO
 import pygame
 import time
 import math
-from mpu6050 import mpu6050
+#from mpu6050 import mpu6050
 
 # Initialize MPU6050
-sensor = mpu6050(0x68)
+#sensor = mpu6050(0x68)
 
 pygame.init()
 pygame.joystick.init()
@@ -214,11 +214,17 @@ def STOP():
     GPIO.output(DIR3, GPIO.HIGH)
     GPIO.output(DIR4, GPIO.HIGH)
         
-       
+
+    GPIO.output(URD, GPIO.HIGH)
+    GPIO.output(LRD, GPIO.HIGH)
+
     SPD1.ChangeDutyCycle(0)
     SPD2.ChangeDutyCycle(0)
     SPD3.ChangeDutyCycle(0)
     SPD4.ChangeDutyCycle(0)
+    SPD_UR.ChangeDutyCycle(0)
+    SPD_LR.ChangeDutyCycle(0)
+   
         
 
 def THROW(speed):
