@@ -31,7 +31,7 @@ URD = 7
 LRD = 13
 
 UR_PWM = 15
-LR_PWM = 29
+LR_PWM = 26   #spi #29
 
 SHACT = 19 #pneumatics 
 
@@ -74,7 +74,7 @@ SPD_UR= GPIO.PWM(UR_PWM, 1000)
 SPD_LR= GPIO.PWM(LR_PWM, 1000)
 
 SPD_CLAW = GPIO.PWM(CLAW_PWM, 1000)
-SPD_CSM =  GPIO.PWM(CSM, 1000)
+#SPD_CSM =  GPIO.PWM(CSM, 1000)
 
 SPD1.start(0)
 SPD2.start(0)
@@ -85,7 +85,7 @@ SPD_UR.start(0)
 SPD_LR.start(0)
 
 SPD_CLAW.start(0)
-SPD_CSM.start(0)
+#SPD_CSM.start(0)
 
 # MSPEED = 0
 # PWM = 75
@@ -232,9 +232,10 @@ def THROW(speed):
       GPIO.output(LRD, GPIO.HIGH)    # C
       SPD_UR.ChangeDutyCycle(speed)
       SPD_LR.ChangeDutyCycle(speed)
+      print(speed)
 
 MSPEED = 0
-PWM = 75
+PWM = 255
 MAXSPEED = round((PWM/255) * 100)
 
 PWMPTR = 0
@@ -347,15 +348,15 @@ while True:
                 #GPIO.output(CLAW, GPIO.LOW)
                 SPD_CLAW.ChangeDutyCycle(0)
             
-            elif btn == 3:    #servo pushing
-                angle=90
-                duty= (angle/18)+3
-                SPD_CSM.ChangeDutyCycle(duty)
+            # elif btn == 3:    #servo pushing
+            #     angle=90
+            #     duty= (angle/18)+3
+            #     SPD_CSM.ChangeDutyCycle(duty)
 
-            elif btn == 23:
-                angle=0
-                duty= (angle/18)+3
-                SPD_CSM.ChangeDutyCycle(duty)
+            # elif btn == 23:
+            #     angle=0
+            #     duty= (angle/18)+3
+            #     SPD_CSM.ChangeDutyCycle(duty)
 
              
 
