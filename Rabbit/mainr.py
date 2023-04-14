@@ -26,12 +26,14 @@ LRD = 13
 UR_PWM = 15
 LR_PWM = 29
 
-SHACT = 19  # pneumatics
+SHACT = 19  # gear claw
+SH_PWM = 35 
 
 CLAW = 21  # claw mechanism
 CLAW_PWM = 23
 
 CSM = 24  # ring pushing
+CSM_PWM = 26 #spi
 
 
 GPIO.setmode(GPIO.BOARD)
@@ -47,6 +49,8 @@ GPIO.setup(PWM_PIN_3, GPIO.OUT)
 GPIO.setup(PWM_PIN_4, GPIO.OUT)
 
 GPIO.setup(SHACT, GPIO.OUT)
+GPIO.setup(SH_PWM, GPIO.OUT)
+
 
 GPIO.setup(URD, GPIO.OUT)
 GPIO.setup(LRD, GPIO.OUT)
@@ -55,6 +59,12 @@ GPIO.setup(LR_PWM, GPIO.OUT)
 
 GPIO.setup(CLAW, GPIO.OUT)
 GPIO.setup(CLAW_PWM, GPIO.OUT)
+
+GPIO.setup(CSM, GPIO.OUT)
+GPIO.setup(CSM_PWM, GPIO.OUT)
+
+
+
 
 
 SPD1 = GPIO.PWM(PWM_PIN_1, 1000)
@@ -66,7 +76,8 @@ SPD_UR = GPIO.PWM(UR_PWM, 1000)
 SPD_LR = GPIO.PWM(LR_PWM, 1000)
 
 SPD_CLAW = GPIO.PWM(CLAW_PWM, 1000)
-#SPD_CSM = GPIO.PWM(CSM, 1000)
+SPD_SHACT = GPIO.PWM(SH_PWM, 1000)
+SPD_CSM = GPIO.PWM(CSM_PWM, 1000)
 
 
 SPD1.start(0)
@@ -78,9 +89,8 @@ SPD_UR.start(0)
 SPD_LR.start(0)
 
 SPD_CLAW.start(0)
-#SPD_CSM.start(0)
-
-
+SPD_CSM.start(0)
+SPD_SHACT.start(0)
 
 # high cw low acw
 def F(speed):  # forward
@@ -201,6 +211,7 @@ def THROW(speed):
       GPIO.output(LRD, GPIO.HIGH)    # C
       SPD_UR.ChangeDutyCycle(speed)
       SPD_LR.ChangeDutyCycle(speed)
+      print(speed)
 
 MSPEED = 0
 PWM = 75
@@ -253,6 +264,13 @@ while True:
             btn = event.button
         elif event.type == pygame.JOYBUTTONUP:
             btn = event.button + 20
+        
+        elif event.type == pygame.JOYHATMOTION:
+            btn= joyStick.get_hat(0)
+            print("pressed")
+            print(btn)
+        
+
 
         if btn != None:
             if btn == 6: #L1 #throwstart  #leftbumper
@@ -263,9 +281,10 @@ while True:
                 startThrow = False
                 PWMPTR = 0
             
-            elif btn == 7:  #pActuator #rightbumper
+            elif btn == 7:  #gearsclaw #rightbumper
                 print("SHACT")
                 GPIO.output(SHACT, GPIO.LOW)
+                SPD_SHACT.ChangeDutyCycle(50)
 
                 #time.sleep(1)
                 #GPIO.output(SHACT, GPIO.HIGH)
@@ -297,7 +316,32 @@ while True:
                 duty= (angle/18)+3
                 SPD_CSM.ChangeDutyCycle(duty)
 
-             
+            elif btn == (1,0):     #lx1
+                MSPEED = 50
+                startThrow = True
+                print("trajectory1")
+            
+            elif btn == (-1,0):  #Rx1
+                
+                MSPEED = 40
+                startThrow = True
+                print("trajectory2")
+
+
+            elif btn == (0,1): #top^
+                
+                MSPEED = 30
+                startThrow = True
+                print("trajectory3") 
+
+
+            elif btn == (0,-1): #bottom^
+                MSPEED = 20
+                startThrow = True
+                print("trajectory4")
+
+            
+            
 
              
 

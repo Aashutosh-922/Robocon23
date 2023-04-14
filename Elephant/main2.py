@@ -38,7 +38,7 @@ SHACT = 19 #pneumatics
 CLAW = 21  #claw mechanism
 CLAW_PWM = 23
 
-CSM = 24  #ring pushing
+PUSH = 24  #ring pushing pnactuator
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -62,6 +62,7 @@ GPIO.setup(LR_PWM, GPIO.OUT)
 GPIO.setup(CLAW, GPIO.OUT)
 GPIO.setup(CLAW_PWM, GPIO.OUT)
 
+GPIO.setup(PUSH, GPIO.OUT)
 
 
 
@@ -313,7 +314,10 @@ while True:
         elif event.type == pygame.JOYBUTTONDOWN:
             btn = event.button
         elif event.type == pygame.JOYBUTTONUP:
-            btn = event.button + 20
+            btn = event.button + 20\
+        
+        elif event.type == pygame.HAT_UP:
+            btn=event.button
 
         if btn != None:
             if btn == 4: #L1 #throwstart
@@ -334,6 +338,20 @@ while True:
             elif btn == 25:
                 GPIO.output(SHACT, GPIO.HIGH)
 
+                
+            elif btn == 3:  #pActuator pushing 
+                print("SHACT")
+                GPIO.output(SHACT, GPIO.LOW)
+
+                #time.sleep(1)
+                #GPIO.output(SHACT, GPIO.HIGH)
+
+            elif btn == 23:
+                GPIO.output(SHACT, GPIO.HIGH)
+
+
+            
+
             
             elif btn == 2:#triangle claw down 
                 GPIO.output(CLAW, GPIO.HIGH)
@@ -347,17 +365,33 @@ while True:
                 GPIO.output(CLAW, GPIO.HIGH)
                 #GPIO.output(CLAW, GPIO.LOW)
                 SPD_CLAW.ChangeDutyCycle(0)
+                
+
+            elif btn == (1,0):     #lx1
+                MSPEED = 50
+                startThrow = True
+                print("trajectory1")
             
-            # elif btn == 3:    #servo pushing
-            #     angle=90
-            #     duty= (angle/18)+3
-            #     SPD_CSM.ChangeDutyCycle(duty)
+            elif btn == (-1,0):  #Rx1
+                
+                MSPEED = 40
+                startThrow = True
+                print("trajectory2")
 
-            # elif btn == 23:
-            #     angle=0
-            #     duty= (angle/18)+3
-            #     SPD_CSM.ChangeDutyCycle(duty)
 
+            elif btn == (0,1): #top^
+                
+                MSPEED = 30
+                startThrow = True
+                print("trajectory3") 
+
+
+            elif btn == (0,-1): #bottom^
+                MSPEED = 20
+                startThrow = True
+                print("trajectory4")
+            
+            
              
 
              
