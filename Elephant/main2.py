@@ -15,6 +15,7 @@ try:
 except:
     print("error")
     pass
+
  
 
 DIR1 = 22
@@ -22,7 +23,7 @@ DIR2 = 31
 DIR3 = 33
 DIR4 = 18
 PWM_PIN_1 = 32
-PWM_PIN_2 = 36
+PWM_PIN_2 = 36 #36
 PWM_PIN_3 = 16    #38
 PWM_PIN_4 = 12 #40
 
@@ -31,14 +32,15 @@ URD = 7
 LRD = 13
 
 UR_PWM = 15
-LR_PWM = 26   #spi #29
+LR_PWM = 26   #spi #29                                                      
 
 SHACT = 19 #pneumatics 
 
 CLAW = 21  #claw mechanism
 CLAW_PWM = 23
 
-PUSH = 24  #ring pushing pnactuator
+PUSH = 24 #24  #ring pushing pnactuator
+
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -62,8 +64,8 @@ GPIO.setup(LR_PWM, GPIO.OUT)
 GPIO.setup(CLAW, GPIO.OUT)
 GPIO.setup(CLAW_PWM, GPIO.OUT)
 
-GPIO.setup(PUSH, GPIO.OUT)
-
+GPIO.setup(PUSH, GPIO.OUT,initial= GPIO.LOW)
+#high == backside
 
 
 SPD1 = GPIO.PWM(PWM_PIN_1, 1000)
@@ -77,6 +79,8 @@ SPD_LR= GPIO.PWM(LR_PWM, 1000)
 SPD_CLAW = GPIO.PWM(CLAW_PWM, 1000)
 #SPD_CSM =  GPIO.PWM(CSM, 1000)
 
+
+
 SPD1.start(0)
 SPD2.start(0)
 SPD3.start(0)
@@ -86,6 +90,10 @@ SPD_UR.start(0)
 SPD_LR.start(0)
 
 SPD_CLAW.start(0)
+
+
+
+
 #SPD_CSM.start(0)
 
 # MSPEED = 0
@@ -233,7 +241,7 @@ def THROW(speed):
       GPIO.output(LRD, GPIO.HIGH)    # C
       SPD_UR.ChangeDutyCycle(speed)
       SPD_LR.ChangeDutyCycle(speed)
-      print(speed)
+      
 
 MSPEED = 0
 PWM = 255
@@ -285,13 +293,12 @@ while True:
             z = joyStick.get_hat(0)
             # print(x)
             # print(y)
-            print(spd)
-            print(z)
+          
             
             if (spd>2):
                 if (x>-20 and x<20) and (y>-20 and y<20):
                     STOP()
-                    print("Stop")
+                    
                 elif (x>70) and (y>-70 and y<70):
                     R(spd)
                     print("Right")
@@ -306,18 +313,21 @@ while True:
                     print("Backward")
                 else:
                     STOP()
-                    print("Stop 2")
+                    
             else:
                 STOP()
-                print("Stop 3")
+               
         
         elif event.type == pygame.JOYBUTTONDOWN:
             btn = event.button
         elif event.type == pygame.JOYBUTTONUP:
             btn = event.button + 20\
         
-        elif event.type == pygame.HAT_UP:
-            btn=event.button
+        elif event.type == pygame.JOYHATMOTION:
+            btn=joyStick.get_hat(0)
+            print("pressed")
+            print(btn)
+            
 
         if btn != None:
             if btn == 4: #L1 #throwstart
@@ -332,33 +342,22 @@ while True:
                 print("SHACT")
                 GPIO.output(SHACT, GPIO.LOW)
 
-                #time.sleep(1)
-                #GPIO.output(SHACT, GPIO.HIGH)
+                
+                
 
             elif btn == 25:
                 GPIO.output(SHACT, GPIO.HIGH)
 
                 
             elif btn == 3:  #pActuator pushing 
-                print("SHACT")
-                GPIO.output(SHACT, GPIO.LOW)
-
-                #time.sleep(1)
-                #GPIO.output(SHACT, GPIO.HIGH)
-
+                GPIO.output(PUSH, GPIO.HIGH)
+                print("rpush")
+                
             elif btn == 23:
-                GPIO.output(SHACT, GPIO.HIGH)
-
-
-            
-
-            
-            elif btn == 2:#triangle claw down 
-                GPIO.output(CLAW, GPIO.HIGH)
-                SPD_CLAW.ChangeDutyCycle() 
+                GPIO.output(PUSH, GPIO.LOW)
 
             elif btn == 0: #cross Claw up
-                GPIO.outout(CLAW, GPIO.LOW)
+                GPIO.output(CLAW, GPIO.LOW)
                 SPD_CLAW.ChangeDutyCycle(spd)
             
             elif btn == 22 or btn == 20:
