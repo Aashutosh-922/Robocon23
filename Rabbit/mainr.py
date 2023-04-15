@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import pygame
 
-#XBOX One 
+#XBOX One  #PS4 alt 
 #Rabbit Bot
 
 pygame.init()
@@ -214,8 +214,7 @@ def THROW(speed):
       print(speed)
 
 MSPEED = 0
-PWM = 75
-MAXSPEED = round((PWM/255) * 100)
+PWM =   0
 
 PWMPTR = 0
 startThrow = False
@@ -230,7 +229,7 @@ while True:
         if event.type == pygame.JOYAXISMOTION:
             x = round(joyStick.get_axis(0)*100)      #left joystick   0,1, 4 =right trigger
             y = -round(joyStick.get_axis(1)*100)                             
-            spd = round(joyStick.get_axis(4)*100)/2 + 50
+            spd = round(joyStick.get_axis(5)*100)/2 + 50   #ps5 right trig
             z = joyStick.get_hat(0)
             # print(x)
             # print(y)
@@ -273,15 +272,16 @@ while True:
 
 
         if btn != None:
-            if btn == 6: #L1 #throwstart  #leftbumper
+            if btn == 4: #L1 #throwstart  #leftbumper #6
+                PWM= 255
                 startThrow = True
                 PWMPTR = 0
         
-            elif btn == 1: #O  #throwstop  #B
+            elif btn == 1: #O  #throwstop  #B #circ
                 startThrow = False
                 PWMPTR = 0
             
-            elif btn == 7:  #gearsclaw #rightbumper
+            elif btn == 5:  #gearsclaw #rightbumper #7
                 print("SHACT")
                 GPIO.output(SHACT, GPIO.LOW)
                 SPD_SHACT.ChangeDutyCycle(50)
@@ -289,19 +289,19 @@ while True:
                 #time.sleep(1)
                 #GPIO.output(SHACT, GPIO.HIGH)
 
-            elif btn == 27:
+            elif btn == 25:
                 GPIO.output(SHACT, GPIO.HIGH)
 
             
-            elif btn == 4:#triangle claw down  #Y
+            elif btn == 2:#triangle claw up  #Y #4
                 GPIO.output(CLAW, GPIO.HIGH)
                 SPD_CLAW.ChangeDutyCycle() 
 
-            elif btn == 0: #cross Claw up  #A
+            elif btn == 0: #cross Claw down  #A
                 GPIO.outout(CLAW, GPIO.LOW)
                 SPD_CLAW.ChangeDutyCycle(spd)
             
-            elif btn == 24 or btn == 20:
+            elif btn == 22 or btn == 20:
                 GPIO.output(CLAW, GPIO.HIGH)
                 #GPIO.output(CLAW, GPIO.LOW)
                 SPD_CLAW.ChangeDutyCycle(0)
@@ -317,34 +317,31 @@ while True:
                 SPD_CSM.ChangeDutyCycle(duty)
 
             elif btn == (1,0):     #lx1
-                MSPEED = 50
+                PWM = 225
                 startThrow = True
                 print("trajectory1")
             
             elif btn == (-1,0):  #Rx1
                 
-                MSPEED = 40
+                PWM = 200
                 startThrow = True
                 print("trajectory2")
 
 
             elif btn == (0,1): #top^
                 
-                MSPEED = 30
+                PWM= 150
                 startThrow = True
                 print("trajectory3") 
 
 
             elif btn == (0,-1): #bottom^
-                MSPEED = 20
+                PWM = 20
                 startThrow = True
                 print("trajectory4")
 
+    MAXSPEED= round((PWM/255)*100)
             
-            
-
-             
-
     if(startThrow) :
         if(MSPEED < MAXSPEED) :
                 #THROW(MAXSPEED)
